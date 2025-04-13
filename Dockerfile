@@ -1,20 +1,18 @@
-FROM n8nio/n8n
+FROM n8nio/n8n:latest
 
-# Install curl and ffmpeg
+# Install curl and ffmpeg on Alpine
 USER root
-RUN apt-get update && \
-    apt-get install -y curl ffmpeg && \
-    apt-get clean
+RUN apk add --no-cache curl ffmpeg
 
 # Enable community nodes and external modules
 ENV N8N_ENABLE_LOAD_EXTERNAL_MODULES=true
 ENV N8N_COMMUNITY_NODES_AUTO_INSTALL=true
 ENV NODE_FUNCTION_ALLOW_EXTERNAL=axios,crypto,moment
 
-# Set back to node user for running the app
+# Revert back to node user
 USER node
 
-# Original ARGs and ENV setup
+# Rest of your ARGs and ENVs...
 ARG PGPASSWORD
 ARG PGHOST
 ARG PGPORT
@@ -37,5 +35,4 @@ ENV N8N_BASIC_AUTH_PASSWORD=$PASSWORD
 
 ENV ENABLE_ALPINE_PRIVATE_NETWORKING=true
 
-# Default start command
 CMD ["n8n", "start"]
